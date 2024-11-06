@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 
 export default function Grid() {
   const [grid, setGrid] = useState<number[][]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [islands, setIslands] = useState<{ row: number; col: number }[][]>([]);
+  console.log('Islands', islands);
   function parseMatrixWithIslands(data: string): {
     matrix: number[][];
     islands: { row: number; col: number }[][];
