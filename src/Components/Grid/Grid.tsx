@@ -1,82 +1,98 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Cell, GridData, Island, Matrix } from '../../types/grid';
 
 export default function Grid() {
-  const [grid, setGrid] = useState<number[][]>([]);
-  const [islands, setIslands] = useState<{ row: number; col: number }[][]>([]);
-  console.log('Islands', islands);
-  function parseMatrixWithIslands(data: string): {
-    matrix: number[][];
-    islands: { row: number; col: number }[][];
-  } {
-    const rows = data.trim().split('\n');
-    const matrix: number[][] = [];
+  const [grid, setGrid] = useState<GridData>({
+    matrix: [],
+    islands: [],
+  });
 
-    for (let i = 0; i < 30; i++) {
-      // Handle cases where there are fewer than 30 rows
-      const row = rows[i] ? rows[i].trim().split(/\s+/) : [];
-      const numbers = row.map((numStr) => parseInt(numStr, 10));
+  const exploreIsland = (
+    matrix: Matrix,
+    visited: boolean[][],
+    startRow: number,
+    startCol: number,
+    islandCells: Cell[]
+  ) => {
+    const stack: [number, number][] = [];
+    stack.push([startRow, startCol]);
 
-      // Pad the row with zeros if it has fewer than 30 numbers
-      while (numbers.length < 30) {
-        numbers.push(0);
+    while (stack.length > 0) {
+      const [currentRow, currentCol] = stack.pop()!;
+      // Check if the current cell is valid and is not visited or has a value of 0
+      if (
+        currentRow < 0 ||
+        currentRow >= matrix[0].length ||
+        currentCol < 0 ||
+        currentCol >= matrix.length
+      ) {
+        continue;
+      }
+      if (visited[currentRow][currentCol]) {
+        continue;
+      }
+      if (matrix[currentRow][currentCol] === 0) {
+        continue;
       }
 
-      // Truncate the row if it has more than 30 numbers
-      if (numbers.length > 30) {
-        numbers.length = 30;
-      }
+      visited[currentRow][currentCol] = true;
+      islandCells.push({ row: currentRow, col: currentCol });
 
-      matrix.push(numbers);
+      stack.push([currentRow - 1, currentCol]);
+      stack.push([currentRow + 1, currentCol]);
+      stack.push([currentRow, currentCol - 1]);
+      stack.push([currentRow, currentCol + 1]);
     }
+  };
 
-    // Now, find the islands
+  const parseMatrixWithIslands = (
+    data: string
+  ): {
+    matrix: Matrix;
+    islands: Island[];
+  } => {
+    const rows = data.trim().split('\n');
+    const matrix: Matrix = [];
+
+    rows.forEach((row) => {
+      // Convert row string data to array of numbers
+      const rowData = row
+        .trim()
+        .split(' ')
+        .map((numStr) => parseInt(numStr, 10));
+
+      matrix.push(rowData);
+    });
+    // Make a visited matrix to keep track of visited cells
     const visited: boolean[][] = [];
     for (let i = 0; i < 30; i++) {
       visited.push(new Array(30).fill(false));
     }
 
-    const islands: { row: number; col: number }[][] = [];
+    const islands: Island[] = [];
 
-    for (let row = 0; row < 30; row++) {
-      for (let col = 0; col < 30; col++) {
+    for (let row = 0; row < matrix[0].length; row++) {
+      for (let col = 0; col < matrix.length; col++) {
         if (!visited[row][col] && matrix[row][col] !== 0) {
           // Start a new island
-          const islandCells: { row: number; col: number }[] = [];
+          const islandCells: Cell[] = [];
           exploreIsland(matrix, visited, row, col, islandCells);
-          islands.push(islandCells);
+          // Calculate the average height of the island by summing all the heights and dividing by the number of cells
+          const averageHeight =
+            islandCells.reduce((acc, cell) => acc + matrix[cell.row][cell.col], 0) /
+            islandCells.length;
+
+          islands.push({
+            cells: islandCells,
+            averageHeight,
+          });
         }
       }
     }
 
     return { matrix, islands };
-
-    function exploreIsland(
-      matrix: number[][],
-      visited: boolean[][],
-      startRow: number,
-      startCol: number,
-      islandCells: { row: number; col: number }[]
-    ) {
-      const stack: [number, number][] = [];
-      stack.push([startRow, startCol]);
-
-      while (stack.length > 0) {
-        const [currentRow, currentCol] = stack.pop()!;
-        if (currentRow < 0 || currentRow >= 30 || currentCol < 0 || currentCol >= 30) continue;
-        if (visited[currentRow][currentCol]) continue;
-        if (matrix[currentRow][currentCol] === 0) continue;
-
-        visited[currentRow][currentCol] = true;
-        islandCells.push({ row: currentRow, col: currentCol });
-
-        stack.push([currentRow - 1, currentCol]);
-        stack.push([currentRow + 1, currentCol]);
-        stack.push([currentRow, currentCol - 1]);
-        stack.push([currentRow, currentCol + 1]);
-      }
-    }
-  }
+  };
 
   const getGridData = async () => {
     const data = await axios.request({
@@ -85,20 +101,21 @@ export default function Grid() {
     });
 
     const grid = data.data;
-
     const matrix = parseMatrixWithIslands(grid);
 
-    console.log(matrix);
-    setGrid(matrix.matrix);
-    setIslands(matrix.islands);
+    setGrid({
+      matrix: matrix.matrix,
+      islands: matrix.islands,
+    });
   };
 
   useEffect(() => {
     getGridData();
   }, []);
+
   return (
     <div className="grid grid-cols-30">
-      {grid.map((row, rowIndex) =>
+      {grid?.matrix.map((row, rowIndex) =>
         row.map((cell, colIndex) => (
           <div
             key={`${rowIndex}-${colIndex}`}
