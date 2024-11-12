@@ -1,7 +1,11 @@
 import useGrid from '../../hooks/useGrid';
+import Loader from '../Loader';
 
 export default function Grid() {
-  const grid = useGrid();
+  const { grid, loading, error } = useGrid();
+
+  if (loading) return <Loader />;
+  if (error) return <div className="text-red-500">{error}</div>;
 
   return (
     <div className="grid grid-cols-30">

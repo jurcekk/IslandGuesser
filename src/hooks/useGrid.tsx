@@ -87,12 +87,14 @@ const parseMatrixWithIslands = (
   return { matrix, islands };
 };
 
-const useGrid = () => {
+export default function useGrid() {
   // Initial state
   const [grid, setGrid] = useState<GridData>({
     matrix: [],
     islands: [],
   });
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Fetch grid data
@@ -106,15 +108,16 @@ const useGrid = () => {
           matrix: parsedData.matrix,
           islands: parsedData.islands,
         });
+        setLoading(false);
       } catch (error) {
+        setError('Failed to fetch grid data.');
         console.error('Error fetching grid data:', error);
+        setLoading(false);
       }
     };
 
     getGridData();
   }, []);
 
-  return grid;
-};
-
-export default useGrid;
+  return { grid, loading, error };
+}
