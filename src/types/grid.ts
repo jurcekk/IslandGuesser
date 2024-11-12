@@ -13,4 +13,5 @@ export type Matrix = number[][];
 export type GridData = {
   matrix: Matrix;
   islands: Island[];
+  highestAverageIslandIndex: number;
 };
