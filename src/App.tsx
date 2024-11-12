@@ -1,8 +1,8 @@
 import './App.css';
-import Grid from './Components/Grid';
+import GamePage from './Pages/GamePage';
 
 function App() {
-  return <Grid />;
+  return <GamePage />;
 }
 
 export default App;
