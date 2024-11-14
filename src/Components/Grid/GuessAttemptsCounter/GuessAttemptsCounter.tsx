@@ -1,9 +1,9 @@
 import { ReactElement } from 'react';
 
-interface GuessAttemptsProps {
+type GuessAttemptsProps = {
   guessesLeft: number;
   totalGuesses: number;
-}
+};
 
 export default function GuessAttemptsCounter({
   guessesLeft,

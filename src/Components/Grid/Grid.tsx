@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import useGrid from '../../hooks/useGrid';
 import Loader from '../Loader';
 import GameInfoModal from './GameInfoModal';
 import GuessAttemptsCounter from './GuessAttemptsCounter';
+import { StatisticsContext } from '../../context/StatisticsContext';
 
 type GridProps = {
   setStartGame: (value: boolean) => void;
@@ -10,12 +11,20 @@ type GridProps = {
 
 export default function Grid({ setStartGame }: GridProps) {
   const { grid, loading, error, handleStartNewGame } = useGrid();
+  const statisticsContext = useContext(StatisticsContext);
+
   // Game logic states
   const [gameOver, setGameOver] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(3);
   const [highestIslandCellsSet, setHighestIslandCellsSet] = useState<Set<string>>(new Set());
+
+  if (!statisticsContext) {
+    throw new Error('StatisticsContext not found');
+  }
+
+  const { updateStatistics } = statisticsContext;
 
   // Reset the game data
   const resetGameData = () => {
@@ -59,6 +68,15 @@ export default function Grid({ setStartGame }: GridProps) {
       }
     }
   };
+
+  useEffect(() => {
+    if (gameOver) {
+      const hasWon = modalMessage.includes('won');
+      if (updateStatistics) {
+        updateStatistics(hasWon);
+      }
+    }
+  }, [gameOver, modalMessage]);
 
   useEffect(() => {
     // Set the highest island cells set
