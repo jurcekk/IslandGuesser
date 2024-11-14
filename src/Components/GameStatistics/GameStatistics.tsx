@@ -7,7 +7,7 @@ type GameStatisticsProps = {
 
 export default function GameStatistics({ statistics }: GameStatisticsProps) {
   return (
-    <div className="mx-auto mb-6 max-w-sm rounded-lg p-6 shadow-2xl">
+    <div className="shadow-custom-shadow mx-auto mb-6 max-w-sm rounded-lg p-6">
       <div className="space-y-4">
         <div className="flex items-center">
           <FaGamepad className="mr-4 text-2xl text-blue-500" />
