@@ -1,8 +1,13 @@
 import './App.css';
-import Grid from './Components/Grid';
+import StatisticsProvider from './context/StatisticsContext';
+import GamePage from './Pages/GamePage';
 
 function App() {
-  return <Grid />;
+  return (
+    <StatisticsProvider>
+      <GamePage />
+    </StatisticsProvider>
+  );
 }
 
 export default App;

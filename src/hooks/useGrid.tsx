@@ -46,6 +46,7 @@ const parseMatrixWithIslands = (
 ): {
   matrix: Matrix;
   islands: Island[];
+  highestAverageIslandIndex: number;
 } => {
   const rows = data.trim().split('\n');
   // Convert row string data to array of numbers
@@ -84,7 +85,13 @@ const parseMatrixWithIslands = (
     }
   }
 
-  return { matrix, islands };
+  const highestAverageIslandIndex = islands.reduce(
+    (highestIndex, island, index) =>
+      island.averageHeight > islands[highestIndex].averageHeight ? index : highestIndex,
+    0
+  );
+
+  return { matrix, islands, highestAverageIslandIndex };
 };
 
 export default function useGrid() {
@@ -92,32 +99,44 @@ export default function useGrid() {
   const [grid, setGrid] = useState<GridData>({
     matrix: [],
     islands: [],
+    highestAverageIslandIndex: 0,
   });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Fetch grid data
-    const getGridData = async () => {
-      try {
-        const response = await axios.get(
-          'https://jobfair.nordeus.com/jf24-fullstack-challenge/test'
-        );
-        const parsedData = parseMatrixWithIslands(response.data);
-        setGrid({
-          matrix: parsedData.matrix,
-          islands: parsedData.islands,
-        });
-        setLoading(false);
-      } catch (error) {
-        setError('Failed to fetch grid data.');
-        console.error('Error fetching grid data:', error);
-        setLoading(false);
-      }
-    };
-
+  // Reset the game data and start a new game
+  const handleStartNewGame = () => {
+    setLoading(true);
+    setError(null);
+    setGrid({
+      matrix: [],
+      islands: [],
+      highestAverageIslandIndex: 0,
+    });
     getGridData();
+  };
+
+  // Fetch grid data
+  const getGridData = async () => {
+    try {
+      const response = await axios.get('https://jobfair.nordeus.com/jf24-fullstack-challenge/test');
+      const parsedData = parseMatrixWithIslands(response.data);
+      setGrid({
+        matrix: parsedData.matrix,
+        islands: parsedData.islands,
+        highestAverageIslandIndex: parsedData.highestAverageIslandIndex,
+      });
+      setLoading(false);
+    } catch (error) {
+      setError('Failed to fetch grid data.');
+      console.error('Error fetching grid data:', error);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    handleStartNewGame();
   }, []);
 
-  return { grid, loading, error };
+  return { grid, loading, error, handleStartNewGame };
 }
