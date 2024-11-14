@@ -10,6 +10,37 @@ type GridProps = {
   setStartGame: (value: boolean) => void;
 };
 
+// Function to determine the cell's color based on its height
+const getCellColor = (height: number): string => {
+  if (height === 0) {
+    return 'bg-blue-800';
+  } else if (height > 0 && height <= 50) {
+    return 'bg-blue-500';
+  } else if (height > 50 && height <= 100) {
+    return 'bg-blue-300';
+  } else if (height > 100 && height <= 200) {
+    return 'bg-yellow-200';
+  } else if (height > 200 && height <= 300) {
+    return 'bg-yellow-400';
+  } else if (height > 300 && height <= 400) {
+    return 'bg-green-400';
+  } else if (height > 400 && height <= 500) {
+    return 'bg-green-600';
+  } else if (height > 500 && height <= 600) {
+    return 'bg-green-800';
+  } else if (height > 600 && height <= 700) {
+    return 'bg-green-900';
+  } else if (height > 700 && height <= 800) {
+    return 'bg-gray-400';
+  } else if (height > 800 && height <= 950) {
+    return 'bg-gray-200';
+  } else if (height > 950 && height <= 1000) {
+    return 'bg-white';
+  } else {
+    return '';
+  }
+};
+
 export default function Grid({ setStartGame }: GridProps) {
   const { grid, loading, error, handleStartNewGame } = useGrid();
   const statisticsContext = useContext(StatisticsContext);
@@ -27,7 +58,6 @@ export default function Grid({ setStartGame }: GridProps) {
   }
 
   const { updateStatistics } = statisticsContext;
-
   // Reset the game data
   const resetGameData = () => {
     setHighestIslandCellsSet(new Set());
@@ -106,7 +136,7 @@ export default function Grid({ setStartGame }: GridProps) {
           row.map((cell, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`h-4 w-4 hover:border-2 hover:border-black ${cell === 0 ? 'bg-blue-400' : 'bg-orange-800'}`}
+              className={`h-4 w-4 hover:border-2 hover:border-black ${getCellColor(cell)}`}
               onClick={() => handleCellClick(rowIndex, colIndex)}
             />
           ))
