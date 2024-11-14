@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import useGrid from '../../hooks/useGrid';
 import Loader from '../Loader';
 import GameInfoModal from './GameInfoModal';
-import GuessCounter from './GuessCounter';
+import GuessAttemptsCounter from './GuessAttemptsCounter';
 
 type GridProps = {
   setStartGame: (value: boolean) => void;
@@ -10,11 +10,10 @@ type GridProps = {
 
 export default function Grid({ setStartGame }: GridProps) {
   const { grid, loading, error, handleStartNewGame } = useGrid();
-  // Game logi states
+  // Game logic states
   const [gameOver, setGameOver] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [message, setMessage] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(3);
   const [highestIslandCellsSet, setHighestIslandCellsSet] = useState<Set<string>>(new Set());
 
@@ -22,7 +21,6 @@ export default function Grid({ setStartGame }: GridProps) {
   const resetGameData = () => {
     setHighestIslandCellsSet(new Set());
     setGuessesLeft(3);
-    setMessage('');
     setGameOver(false);
     setShowModal(false);
   };
@@ -53,7 +51,6 @@ export default function Grid({ setStartGame }: GridProps) {
     } else {
       if (guessesLeft - 1 > 0) {
         setGuessesLeft((prev) => prev - 1);
-        setMessage('Wrong guess!');
       } else {
         setGuessesLeft(0);
         setGameOver(true);
@@ -78,7 +75,7 @@ export default function Grid({ setStartGame }: GridProps) {
   return (
     <>
       {/* Guess counter */}
-      <GuessCounter message={message} guessesLeft={guessesLeft} />
+      <GuessAttemptsCounter totalGuesses={3} guessesLeft={guessesLeft} />
 
       {/* Game grid */}
       <div className="grid grid-cols-30">
