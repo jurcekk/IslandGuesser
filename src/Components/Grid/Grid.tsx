@@ -4,6 +4,7 @@ import Loader from '../Loader';
 import GameInfoModal from './GameInfoModal';
 import GuessAttemptsCounter from './GuessAttemptsCounter';
 import { StatisticsContext } from '../../context/StatisticsContext';
+import ConfettiExplosion from 'react-confetti-explosion';
 
 type GridProps = {
   setStartGame: (value: boolean) => void;
@@ -19,6 +20,7 @@ export default function Grid({ setStartGame }: GridProps) {
   const [modalMessage, setModalMessage] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(3);
   const [highestIslandCellsSet, setHighestIslandCellsSet] = useState<Set<string>>(new Set());
+  const [isExploding, setIsExploding] = useState(false);
 
   if (!statisticsContext) {
     throw new Error('StatisticsContext not found');
@@ -32,6 +34,7 @@ export default function Grid({ setStartGame }: GridProps) {
     setGuessesLeft(3);
     setGameOver(false);
     setShowModal(false);
+    setIsExploding(false);
   };
 
   // Start the game
@@ -57,6 +60,7 @@ export default function Grid({ setStartGame }: GridProps) {
       setGameOver(true);
       setModalMessage('You won! You found the highest average height island.');
       setShowModal(true);
+      setIsExploding(true);
     } else {
       if (guessesLeft - 1 > 0) {
         setGuessesLeft((prev) => prev - 1);
@@ -92,6 +96,7 @@ export default function Grid({ setStartGame }: GridProps) {
 
   return (
     <>
+      {isExploding && <ConfettiExplosion />}
       {/* Guess counter */}
       <GuessAttemptsCounter totalGuesses={3} guessesLeft={guessesLeft} />
 
