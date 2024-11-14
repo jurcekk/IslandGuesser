@@ -4,9 +4,41 @@ import Loader from '../Loader';
 import GameInfoModal from './GameInfoModal';
 import GuessAttemptsCounter from './GuessAttemptsCounter';
 import { StatisticsContext } from '../../context/StatisticsContext';
+import ConfettiExplosion from 'react-confetti-explosion';
 
 type GridProps = {
   setStartGame: (value: boolean) => void;
+};
+
+// Function to determine the cell's color based on its height
+const getCellColor = (height: number): string => {
+  if (height === 0) {
+    return 'bg-blue-800';
+  } else if (height > 0 && height <= 50) {
+    return 'bg-blue-500';
+  } else if (height > 50 && height <= 100) {
+    return 'bg-blue-300';
+  } else if (height > 100 && height <= 200) {
+    return 'bg-yellow-200';
+  } else if (height > 200 && height <= 300) {
+    return 'bg-yellow-400';
+  } else if (height > 300 && height <= 400) {
+    return 'bg-green-400';
+  } else if (height > 400 && height <= 500) {
+    return 'bg-green-600';
+  } else if (height > 500 && height <= 600) {
+    return 'bg-green-800';
+  } else if (height > 600 && height <= 700) {
+    return 'bg-green-900';
+  } else if (height > 700 && height <= 800) {
+    return 'bg-gray-400';
+  } else if (height > 800 && height <= 950) {
+    return 'bg-gray-200';
+  } else if (height > 950 && height <= 1000) {
+    return 'bg-white';
+  } else {
+    return '';
+  }
 };
 
 export default function Grid({ setStartGame }: GridProps) {
@@ -19,19 +51,20 @@ export default function Grid({ setStartGame }: GridProps) {
   const [modalMessage, setModalMessage] = useState('');
   const [guessesLeft, setGuessesLeft] = useState(3);
   const [highestIslandCellsSet, setHighestIslandCellsSet] = useState<Set<string>>(new Set());
+  const [isExploding, setIsExploding] = useState(false);
 
   if (!statisticsContext) {
     throw new Error('StatisticsContext not found');
   }
 
   const { updateStatistics } = statisticsContext;
-
   // Reset the game data
   const resetGameData = () => {
     setHighestIslandCellsSet(new Set());
     setGuessesLeft(3);
     setGameOver(false);
     setShowModal(false);
+    setIsExploding(false);
   };
 
   // Start the game
@@ -57,6 +90,7 @@ export default function Grid({ setStartGame }: GridProps) {
       setGameOver(true);
       setModalMessage('You won! You found the highest average height island.');
       setShowModal(true);
+      setIsExploding(true);
     } else {
       if (guessesLeft - 1 > 0) {
         setGuessesLeft((prev) => prev - 1);
@@ -92,6 +126,7 @@ export default function Grid({ setStartGame }: GridProps) {
 
   return (
     <>
+      {isExploding && <ConfettiExplosion />}
       {/* Guess counter */}
       <GuessAttemptsCounter totalGuesses={3} guessesLeft={guessesLeft} />
 
@@ -101,7 +136,7 @@ export default function Grid({ setStartGame }: GridProps) {
           row.map((cell, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`h-4 w-4 hover:border-2 hover:border-black ${cell === 0 ? 'bg-blue-400' : 'bg-orange-800'}`}
+              className={`h-4 w-4 hover:border-2 hover:border-black ${getCellColor(cell)}`}
               onClick={() => handleCellClick(rowIndex, colIndex)}
             />
           ))
