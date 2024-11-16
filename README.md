@@ -4,7 +4,7 @@ This is my solution for Nordeus Full-stack Challenge 2024
 
 ## How to run the application
 
-This is guide to how can you run this application localy on your machine.
+This is guide to how can you run this application locally on your machine.
 
 - You need to install `yarn` package on your machine using npm (`npm install --global yarn`),
   if you do not have npm installed on your machine, you need to download and install [nodejs](https://nodejs.org/en)
