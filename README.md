@@ -15,6 +15,6 @@ This is guide to how can you run this application locally on your machine.
 
 - After successful installation run `yarn start` command that would run application
 
-### Optional (CORS ERROR)
+### ⚠️ Optional (CORS ERROR) ⚠️
 
 If you are getting CORS error, you would need to install `Allow CORS: Access-Control-Allow-Origin` extension and make sure that extensions is running.
