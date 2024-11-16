@@ -7,6 +7,7 @@ import GuessAttemptsCounter from './GuessAttemptsCounter';
 import { StatisticsContext } from '../../context/StatisticsContext';
 import ConfettiExplosion from 'react-confetti-explosion';
 import { MdClose } from 'react-icons/md';
+import Toast from './Toast';
 
 type GridProps = {
   setStartGame: (value: boolean) => void;
@@ -54,6 +55,7 @@ export default function Grid({ setStartGame }: GridProps) {
   const [guessesLeft, setGuessesLeft] = useState(3);
   const [highestIslandCellsSet, setHighestIslandCellsSet] = useState<Set<string>>(new Set());
   const [isExploding, setIsExploding] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   if (!statisticsContext) {
     throw new Error('StatisticsContext not found');
@@ -83,8 +85,14 @@ export default function Grid({ setStartGame }: GridProps) {
   };
 
   // Handle user clicking on a cell
-  const handleCellClick = (rowIndex: number, colIndex: number) => {
-    if (gameOver) return;
+  const handleCellClick = (rowIndex: number, colIndex: number, height: number) => {
+    if (height === 0) {
+      setShowToast(true);
+      return;
+    }
+    if (gameOver) {
+      return;
+    }
 
     const cellKey = `${rowIndex}-${colIndex}`;
 
@@ -155,8 +163,11 @@ export default function Grid({ setStartGame }: GridProps) {
           row.map((cell, colIndex) => (
             <div
               key={`${rowIndex}-${colIndex}`}
-              className={`h-4 w-4 hover:border-2 hover:border-black ${getCellColor(cell)}`}
-              onClick={() => handleCellClick(rowIndex, colIndex)}
+              className={`h-4 w-4 ${grid.matrix[rowIndex][colIndex] > 0 ? 'hover:border-2' : ''} hover:border-black ${getCellColor(cell)}`}
+              onClick={() => {
+                const height = grid.matrix[rowIndex][colIndex];
+                handleCellClick(rowIndex, colIndex, height);
+              }}
             />
           ))
         )}
@@ -175,6 +186,10 @@ export default function Grid({ setStartGame }: GridProps) {
           handleResetGame={handleResetGame}
           modalMessage={modalMessage}
         />
+      )}
+
+      {showToast && (
+        <Toast message="You can't click on the sea!" onClose={() => setShowToast(false)} />
       )}
     </>
   );
