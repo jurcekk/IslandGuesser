@@ -1,0 +1,50 @@
+
+
+Issues:
+
+One of the issues that I came up during the project was related to state management. Specifically, the state variables were not updating as expected.
+I became aware of this issue because the data displayed on the screen did not match the anticipated values.
+For example, the user statistics were showing incorrect data. Wrong data indicated that the components were not
+receiving the most recent state updates. To fix this, I utilized the useContext hooks, which allowed for more 
+effective state management across the application.
+By implementing the useContext hook, I made the state available globally, ensuring that all components accessed 
+the same state instance. This change, along with reorganizing the file structure for better modularity, resolved the state synchronization issues.
+
+While using the useEffect hook, I encountered an issue where the application entered an infinite loop due to functions running inside the hook. 
+I noticed this problem by using the console.log function to output values in the browser console, where I saw that the function was executing more than a thousand times.
+I resolved this by removing certain dependencies from the useEffect hook's dependency array, which prevented unnecessary re-renders and stopped the infinite loop.
+
+
+Ways for testing: 
+
+I would look for application's performance to determine whether it performs fast or slow. I would also examine the user experience design (UX), 
+to make sure that application provides some kind of flow that user can easily follow.
+Additionaly I would check how does the application handles errors and edge cases, paying attention to how error messages are displayed. 
+I would try to stress test the game by spamming the map fields, to se if any data would be out of sync.
+
+
+Improvements:
+
+1. I would make islands better looking by not using grid to display each coordinate. 
+   Instead of having rough edges, the islands would appear more natural by smoothing and curving their edges.
+
+2. I would enhance the user experience by adding background music and sound effects for each user interaction. 
+   Additionally, I would include buttons to mute each of the sounds, providing users with control over the audio elements.
+
+3. I would add the tutorial for new players where it would be explained how does the game work and how it should be played.
+
+4. I would enhance the game by adding more difficulties and levels, thereby ensuring more gameplay time for users.
+
+5. I would implement highscore table for users that wants to compete with others.
+
+
+Factors: 
+
+I believe that simply changing the map size and the initial number of islands would make it more difficult for users to find the correct island. 
+This could result in an imbalanced game that becomes too challenging to play and enjoy. If only the number of lives were increased, it would become much easier for users to complete the maps, 
+potentially leading to boredom and a lack of interest in playing the game because it becomes too easy to find the correct island.
+
+Additionally, changes to the backend response would have a significant impact on the game. For example, if the backend were to provide all the levels at once, 
+we would need to store the initial levels on the user's device. This could initially worsen the game's performance due to the need to load all levels upfront. 
+However, after loading all the necessary data, the game would perform better because it would no longer need to call the server for level data. 
+It's also possible that if the backend returned different type of data, additional conversions would be required for the application to function the same way.

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from 'react';
 import useGrid from '../../hooks/useGrid';
 import Loader from '../Loader';
@@ -5,6 +6,7 @@ import GameInfoModal from './GameInfoModal';
 import GuessAttemptsCounter from './GuessAttemptsCounter';
 import { StatisticsContext } from '../../context/StatisticsContext';
 import ConfettiExplosion from 'react-confetti-explosion';
+import { MdClose } from 'react-icons/md';
 
 type GridProps = {
   setStartGame: (value: boolean) => void;
@@ -122,14 +124,31 @@ export default function Grid({ setStartGame }: GridProps) {
   }, [grid?.islands, grid?.highestAverageIslandIndex, grid]);
 
   if (loading) return <Loader />;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (error)
+    return (
+      <div className="flex flex-col items-center justify-center rounded border border-red-400 bg-red-100 p-4 text-red-700">
+        <div className="flex items-center justify-center">
+          <span className="text-3xl">
+            <MdClose />
+          </span>
+          {error}
+        </div>
+        <div>
+          <button
+            onClick={handleStartNewGame}
+            className="mt-4 rounded bg-red-500 px-4 py-2 text-white hover:border-red-900"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
 
   return (
     <>
       {isExploding && <ConfettiExplosion />}
       {/* Guess counter */}
       <GuessAttemptsCounter totalGuesses={3} guessesLeft={guessesLeft} />
-
       {/* Game grid */}
       <div className="grid grid-cols-30">
         {grid?.matrix.map((row, rowIndex) =>
