@@ -1,50 +1,20 @@
-# React + TypeScript + Vite
+# Island guesser
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is my solution for Nordeus Full-stack Challenge 2024
 
-Currently, two official plugins are available:
+## How to run the application
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is guide to how can you run this application localy on your machine.
 
-## Expanding the ESLint configuration
+- You need to install `yarn` package on your machine using npm (`npm install --global yarn`),
+  if you do not have npm installed on your machine, you need to download and install [nodejs](https://nodejs.org/en)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- After installing necesary packages, open this project in `Visual Studio Code` or any `IDE` of your choice.
 
-- Configure the top-level `parserOptions` property like this:
+- Open terminal inside `IDE` and run `yarn install` command, which would install all necesary packages that this project requires
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- After successful installation run `yarn start` command that would run application
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Optional (CORS ERROR)
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+If you are getting CORS error, you would need to install `Allow CORS: Access-Control-Allow-Origin` extension and make sure that extensions is running.
